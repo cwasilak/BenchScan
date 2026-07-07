@@ -3,6 +3,7 @@ BenchScan Hardware Detection
 Version 0.1.0
 """
 
+from models import HardwareInfo
 from pathlib import Path
 import subprocess
 import re
@@ -43,30 +44,21 @@ def run_command(command):
 
 def get_hardware():
 
-    info = {}
+    info = HardwareInfo()
 
-    # Date / Time
-    info["scan_date"] = run_command("date '+%Y-%m-%d %H:%M:%S'")
+    info.scan_date = run_command("date '+%Y-%m-%d %H:%M:%S'")
 
-    # Manufacturer
-    info["manufacturer"] = read_file("/sys/class/dmi/id/sys_vendor")
+    info.manufacturer = read_file("/sys/class/dmi/id/sys_vendor")
 
-    # Model
-    info["model"] = read_file("/sys/class/dmi/id/product_name")
+    info.model = read_file("/sys/class/dmi/id/product_name")
 
-    # Serial
-    info["serial"] = read_file(
+    info.serial = read_file(
         "/sys/class/dmi/id/product_serial",
         sudo=True
     )
 
-    # Asset Tag
-    info["asset_tag"] = read_file("/sys/class/dmi/id/chassis_asset_tag")
-
-    # CPU
-    cpu = run_command("lscpu | grep 'Model name'")
-    cpu = cpu.replace("Model name:", "").strip()
-    info["cpu"] = cpu
+    info.cpu = run_command("lscpu | grep 'Model name'")
+    info.cpu = info.cpu.replace("Model name:", "").strip()
 
     # RAM
     ram = run_command("free -g | awk '/Mem:/ {print $2}'")

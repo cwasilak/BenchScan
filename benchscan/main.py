@@ -1,38 +1,31 @@
-"""
-BenchScan
-Version 0.1.0
-"""
+#!/usr/bin/env python3
 
-from hardware import get_hardware
+from models import new_inventory
+from scanners.system import scan_system
+from scanners.cpu import scan_cpu
+from scanners.memory import scan_memory
+from scanners.storage import scan_storage
 
 
-def main():
+def run_scan():
 
-    info = get_hardware()
+    inventory = new_inventory()
 
-    print("=" * 60)
-    print("                 BENCHSCAN v0.1")
-    print("=" * 60)
-    print()
+    inventory = scan_system(inventory)
+    inventory = scan_cpu(inventory)
+    inventory = scan_memory(inventory)
+    inventory = scan_storage(inventory)
 
-    print(f"Scan Date    : {info['scan_date']}")
-    print()
-    print(f"Manufacturer : {info['manufacturer']}")
-    print(f"Model        : {info['model']}")
-    print(f"Serial       : {info['serial']}")
-    print(f"Asset Tag    : {info['asset_tag']}")
-    print()
-    print(f"CPU          : {info['cpu']}")
-    print(f"RAM          : {info['ram_gb']}")
-    print(f"Memory Slots : {info['memory_slots']}")
-    print()
-    print(f"Storage Model: {info['storage_model']}")
-    print(f"Storage Size : {info['storage_size']}")
-    print(f"Storage Type : {info['storage_type']}")
-    print()
-
-    input("Notes (optional): ")
+    return inventory
 
 
 if __name__ == "__main__":
-    main()
+
+    print()
+    print("BenchScan v0.1")
+    print("Starting hardware scan...")
+    print()
+
+    result = run_scan()
+
+    result.display()
