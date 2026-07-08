@@ -29,7 +29,8 @@ def build_summary():
                 row["CPU"],
                 row["RAM"],
                 row["Storage Size"],
-                row["Storage Type"]
+                row["Storage Type"],
+                row.get("Battery Present", "")
             )
 
             counter[key] += 1
@@ -45,7 +46,8 @@ def build_summary():
             "CPU",
             "RAM",
             "Storage Size",
-            "Storage Type"
+            "Storage Type",
+            "Battery Present"
         ])
 
         for key in sorted(counter.keys()):
