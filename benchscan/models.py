@@ -14,6 +14,17 @@ class HardwareInventory:
     storage_size: str = ""
     storage_type: str = ""
     storage_model: str = ""
+
+    # Battery Information
+    battery_present: str = ""
+    battery_manufacturer: str = ""
+    battery_model: str = ""
+    battery_design_capacity: str = ""
+    battery_full_capacity: str = ""
+    battery_health: str = ""
+    battery_cycle_count: str = ""
+    battery_status: str = ""
+
     notes: str = ""
 
 
