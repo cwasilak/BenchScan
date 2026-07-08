@@ -1,84 +1,70 @@
-"""
-Battery Scanner
-"""
-
 from pathlib import Path
 
+from benchscan.utils.linux import read_file
 
-class BatteryScanner:
-    """Reads battery information from Linux sysfs."""
 
-    def __init__(self):
-        self.base = None
+def _battery_path():
+    power = Path("/sys/class/power_supply")
 
-        power = Path("/sys/class/power_supply")
+    if not power.exists():
+        return None
 
-        if power.exists():
-            bats = sorted(power.glob("BAT*"))
-            if bats:
-                self.base = bats[0]
+    bats = sorted(power.glob("BAT*"))
 
-    def _read(self, filename):
-        if self.base is None:
-            return ""
+    if not bats:
+        return None
 
-        path = self.base / filename
+    return bats[0]
 
-        try:
-            return path.read_text().strip()
-        except Exception:
-            return ""
 
-    def _capacity(self, primary, alternate):
-        value = self._read(primary)
+def _read(base, filename):
+    if base is None:
+        return ""
 
-        if value == "":
-            value = self._read(alternate)
+    return read_file(str(base / filename))
 
-        try:
-            return int(value)
-        except Exception:
-            return None
 
-    def scan(self):
-        """
-        Returns battery information.
-        """
+def _capacity(base):
+    value = _read(base, "energy_full_design")
+    if value:
+        design = value
+        full = _read(base, "energy_full")
+    else:
+        design = _read(base, "charge_full_design")
+        full = _read(base, "charge_full")
 
-        if self.base is None:
-            return {
-                "Battery Present": "No",
-                "Battery Manufacturer": "",
-                "Battery Model": "",
-                "Battery Design Capacity": "",
-                "Battery Full Capacity": "",
-                "Battery Health %": "",
-                "Battery Cycle Count": "",
-                "Battery Status": ""
-            }
-
-        design = self._capacity(
-            "energy_full_design",
-            "charge_full_design"
-        )
-
-        full = self._capacity(
-            "energy_full",
-            "charge_full"
-        )
-
+    try:
+        design = int(design)
+        full = int(full)
+        health = round((full / design) * 100, 1) if design > 0 else ""
+    except Exception:
+        design = ""
+        full = ""
         health = ""
 
-        if design and full and design > 0:
-            health = round((full / design) * 100, 1)
+    return design, full, health
 
-        return {
-            "Battery Present": "Yes",
-            "Battery Manufacturer": self._read("manufacturer"),
-            "Battery Model": self._read("model_name"),
-            "Battery Design Capacity": design if design else "",
-            "Battery Full Capacity": full if full else "",
-            "Battery Health %": health,
-            "Battery Cycle Count": self._read("cycle_count"),
-            "Battery Status": self._read("status")
-        }
+
+def scan(inventory):
+
+    base = _battery_path()
+
+    if base is None:
+        inventory.battery_present = "No"
+        return inventory
+
+    inventory.battery_present = "Yes"
+
+    inventory.battery_manufacturer = _read(base, "manufacturer")
+    inventory.battery_model = _read(base, "model_name")
+
+    design, full, health = _capacity(base)
+
+    inventory.battery_design_capacity = design
+    inventory.battery_full_capacity = full
+    inventory.battery_health = health
+
+    inventory.battery_cycle_count = _read(base, "cycle_count")
+    inventory.battery_status = _read(base, "status")
+
+    return inventory
