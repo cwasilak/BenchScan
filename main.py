@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
-from models import new_inventory
-from scanners.system import scan_system
-from scanners.cpu import scan_cpu
-from scanners.memory import scan_memory
-from scanners.storage import scan_storage
+from benchscan.models import new_inventory
+from benchscan.scanners.system import scan_system
+from benchscan.scanners.cpu import scan_cpu
+from benchscan.scanners.memory import scan_memory
+from benchscan.scanners.storage import scan_storage
 
 
 def run_scan():
