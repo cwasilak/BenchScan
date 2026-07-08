@@ -5,6 +5,7 @@ from benchscan.scanners.cpu import scan as scan_cpu
 from benchscan.scanners.memory import scan as scan_memory
 from benchscan.scanners.storage import scan as scan_storage
 from benchscan.exporters.csv_writer import write_inventory
+from benchscan.summary.summary import build_summary
 
 
 class BenchScanner:
@@ -19,5 +20,7 @@ class BenchScanner:
         scan_storage(inventory)
 
         write_inventory(inventory)
+
+        build_summary()
 
         return inventory
