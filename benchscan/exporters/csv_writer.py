@@ -17,7 +17,18 @@ HEADERS = [
     "RAM",
     "Storage Size",
     "Storage Type",
-    "Storage Model"
+    "Storage Model",
+
+    "Battery Present",
+    "Battery Manufacturer",
+    "Battery Model",
+    "Battery Design Capacity",
+    "Battery Full Capacity",
+    "Battery Health %",
+    "Battery Cycle Count",
+    "Battery Status",
+
+    "Notes"
 ]
 
 
@@ -32,6 +43,17 @@ def inventory_to_row(inventory):
         "Storage Size": inventory.storage_size,
         "Storage Type": inventory.storage_type,
         "Storage Model": inventory.storage_model,
+
+        "Battery Present": inventory.battery_present,
+        "Battery Manufacturer": inventory.battery_manufacturer,
+        "Battery Model": inventory.battery_model,
+        "Battery Design Capacity": inventory.battery_design_capacity,
+        "Battery Full Capacity": inventory.battery_full_capacity,
+        "Battery Health %": inventory.battery_health,
+        "Battery Cycle Count": inventory.battery_cycle_count,
+        "Battery Status": inventory.battery_status,
+
+        "Notes": inventory.notes,
     }
 
 
@@ -61,5 +83,4 @@ def write_inventory(inventory):
         writer = csv.DictWriter(f, fieldnames=HEADERS)
 
         writer.writeheader()
-
         writer.writerows(rows)

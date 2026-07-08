@@ -21,6 +21,7 @@ class BenchScanner:
         scan_storage(inventory)
         scan_battery(inventory)
 
+        print(vars(inventory))
 
         write_inventory(inventory)
 
