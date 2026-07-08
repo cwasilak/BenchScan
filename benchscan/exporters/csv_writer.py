@@ -1,19 +1,23 @@
 import csv
-import os
+from pathlib import Path
+
+# Project root (BenchScan/)
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DATA_DIR = PROJECT_ROOT / "data"
+DATA_DIR.mkdir(exist_ok=True)
+
+CSV_FILE = DATA_DIR / "Inventory_Detail.csv"
 
 
 def write_inventory(inventory):
 
-    filename = "data/Inventory_Detail.csv"
+    file_exists = CSV_FILE.exists()
 
-    file_exists = os.path.exists(filename)
-
-    with open(filename, "a", newline="", encoding="utf-8") as csvfile:
+    with open(CSV_FILE, "a", newline="", encoding="utf-8") as csvfile:
 
         writer = csv.writer(csvfile)
 
         if not file_exists:
-
             writer.writerow([
                 "Scan Date",
                 "Manufacturer",
