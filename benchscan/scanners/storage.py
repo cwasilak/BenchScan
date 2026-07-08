@@ -1,3 +1,5 @@
+import json
+
 from benchscan.utils.linux import run
 
 
@@ -7,44 +9,44 @@ def scan(inventory):
     inventory.storage_type = "Unknown"
     inventory.storage_model = "Unknown"
 
-    output = run(
-        "lsblk -d -b -o NAME,ROTA,TRAN,SIZE,MODEL | grep -v '^loop'"
-    )
+    output = run("lsblk -J -d -b -o NAME,ROTA,TRAN,SIZE,MODEL,TYPE")
 
-    for line in output.splitlines():
+    if not output:
+        return inventory
 
-        parts = line.split(None, 4)
+    try:
+        data = json.loads(output)
 
-        if len(parts) < 5:
-            continue
+        for drive in data["blockdevices"]:
 
-        name = parts[0]
-        rota = parts[1]
-        tran = parts[2]
-        size = parts[3]
-        model = parts[4].strip()
+            # Skip loop devices
+            if drive.get("type") != "disk":
+                continue
 
-        # Skip USB drives (your BenchScan USB)
-        if tran == "usb":
-            continue
+            # Skip the USB boot drive
+            if drive.get("tran") == "usb":
+                continue
 
-        try:
-            size_gb = round(int(size) / (1024 ** 3))
-            inventory.storage_size = f"{size_gb} GB"
-        except Exception:
-            pass
+            size = int(drive.get("size", 0))
 
-        inventory.storage_model = model
+            inventory.storage_size = f"{round(size / (1024**3))} GB"
+            inventory.storage_model = (drive.get("model") or "").strip()
 
-        if tran == "nvme":
-            inventory.storage_type = "NVMe"
+            tran = drive.get("tran")
+            rota = drive.get("rota")
 
-        elif rota == "0":
-            inventory.storage_type = "SSD"
+            if tran == "nvme":
+                inventory.storage_type = "NVMe"
 
-        else:
-            inventory.storage_type = "HDD"
+            elif rota:
+                inventory.storage_type = "HDD"
 
-        break
+            else:
+                inventory.storage_type = "SSD"
+
+            break
+
+    except Exception:
+        pass
 
     return inventory
