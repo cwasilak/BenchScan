@@ -1,10 +1,12 @@
 from benchscan.models import new_inventory
 from benchscan.scanners.system import scan
+from benchscan.scanners.cpu import scan as scan_cpu
 
 
 def main():
     inventory = new_inventory()
     scan(inventory)
+    scan_cpu(inventory)
 
     print("\nBenchScan v1.0")
     print("=" * 50)
@@ -12,6 +14,7 @@ def main():
     print(f"Manufacturer : {inventory.manufacturer or 'Unknown'}")
     print(f"Model        : {inventory.model or 'Unknown'}")
     print(f"Serial       : {inventory.serial or 'Unknown'}")
+    print(f"CPU          : {inventory.cpu or 'Unknown'}")
     print("=" * 50)
 
 
