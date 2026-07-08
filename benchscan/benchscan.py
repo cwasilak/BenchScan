@@ -21,10 +21,11 @@ class BenchScanner:
         scan_storage(inventory)
         scan_battery(inventory)
 
-        print(vars(inventory))
+        return inventory
+
+
+    def save(self, inventory):
 
         write_inventory(inventory)
 
         build_summary()
-
-        return inventory

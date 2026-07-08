@@ -9,6 +9,7 @@ LINE = "=" * 60
 def main():
 
     scanner = BenchScanner()
+
     inventory = scanner.scan()
 
     print()
@@ -56,9 +57,17 @@ def main():
         print("Present      : No")
 
     print()
-    print(LINE)
-    print("Inventory files updated successfully.")
-    print(LINE)
+    print("-" * 60)
+
+    inventory.notes = input("Notes (optional): ").strip()
+
+    scanner.save(inventory)
+
+    print()
+    print("✓ Inventory_Detail.csv updated")
+    print("✓ Inventory_Summary.csv updated")
+    print()
+    print("Scan Complete. You may now power off this computer.")
     print()
 
 

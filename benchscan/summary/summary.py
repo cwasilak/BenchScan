@@ -30,7 +30,8 @@ def build_summary():
                 row["RAM"],
                 row["Storage Size"],
                 row["Storage Type"],
-                row.get("Battery Present", "")
+                row.get("Battery Present", ""),
+                row.get("Notes", "")
             )
 
             counter[key] += 1
@@ -47,14 +48,13 @@ def build_summary():
             "RAM",
             "Storage Size",
             "Storage Type",
-            "Battery Present"
+            "Battery Present",
+            "Notes"
         ])
 
         for key in sorted(counter.keys()):
 
-            qty = counter[key]
-
             writer.writerow([
-                qty,
+                counter[key],
                 *key
             ])
