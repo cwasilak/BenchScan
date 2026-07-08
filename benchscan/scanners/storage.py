@@ -3,12 +3,6 @@ import json
 from benchscan.utils.linux import run
 
 
-def scan(inventory):
-
-    inventory.storage_size = "Unknown"
-    inventory.storage_type = "Unknown"
-    inventory.storage_model = "Unknown"
-
 def format_storage_size(size_bytes):
     """
     Return common marketed drive sizes instead of binary GiB.
@@ -35,6 +29,13 @@ def format_storage_size(size_bytes):
 
     return f"{closest} GB"
 
+
+def scan(inventory):
+
+    inventory.storage_size = "Unknown"
+    inventory.storage_type = "Unknown"
+    inventory.storage_model = "Unknown"
+
     output = run("lsblk -J -d -b -o NAME,ROTA,TRAN,SIZE,MODEL,TYPE")
 
     if not output:
@@ -45,11 +46,11 @@ def format_storage_size(size_bytes):
 
         for drive in data["blockdevices"]:
 
-            # Skip loop devices
+            # Ignore loop devices
             if drive.get("type") != "disk":
                 continue
 
-            # Skip the USB boot drive
+            # Ignore the USB boot drive
             if drive.get("tran") == "usb":
                 continue
 
@@ -63,16 +64,14 @@ def format_storage_size(size_bytes):
 
             if tran == "nvme":
                 inventory.storage_type = "NVMe"
-
             elif rota:
                 inventory.storage_type = "HDD"
-
             else:
                 inventory.storage_type = "SSD"
 
             break
 
-    except Exception:
-        pass
+    except Exception as e:
+        print("Storage Scanner Error:", e)
 
     return inventory
