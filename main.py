@@ -1,7 +1,11 @@
+import platform
+import subprocess
+
 #!/usr/bin/env python3
 
 from benchscan.benchscan import BenchScanner
 from benchscan.version import VERSION, BUILD
+from benchscan.health import check
 
 
 LINE = "=" * 60
@@ -9,6 +13,7 @@ LINE = "=" * 60
 
 def main():
 
+    check()
     scanner = BenchScanner()
 
     inventory = scanner.scan()
@@ -68,9 +73,18 @@ def main():
     print()
     print("✓ Inventory_Detail.csv updated")
     print("✓ Inventory_Summary.csv updated")
+    import subprocess
+
     print()
-    print("Scan Complete. You may now power off this computer.")
+    print("=" * 60)
+    print("Scan Complete.")
     print()
+    input("Press ENTER to shut down...")
+
+if platform.system() == "Linux":
+    subprocess.run(["sudo", "poweroff"])
+else:
+    print("Shutdown skipped (Windows test mode).")
 
 
 if __name__ == "__main__":

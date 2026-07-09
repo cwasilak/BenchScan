@@ -8,6 +8,7 @@ from benchscan.scanners.battery import scan as scan_battery
 
 from benchscan.exporters.csv_writer import write_inventory
 from benchscan.summary.summary import build_summary
+from benchscan.logger import log
 
 
 class BenchScanner:
@@ -16,23 +17,30 @@ class BenchScanner:
 
         inventory = new_inventory()
 
+        log("Scan Started")
+
         print("Scanning Hardware...")
         print()
 
         scan_system(inventory)
         print("✓ System")
+        log("System Scan Complete")
 
         scan_cpu(inventory)
         print("✓ CPU")
+        log("CPU Scan Complete")
 
         scan_memory(inventory)
         print("✓ Memory")
+        log("Memory Scan Complete")
 
         scan_storage(inventory)
         print("✓ Storage")
+        log("Storage Scan Complete")
 
         scan_battery(inventory)
         print("✓ Battery")
+        log("Battery Scan Complete")
 
         print()
 
@@ -43,8 +51,15 @@ class BenchScanner:
         print("Generating Reports...")
         print()
 
+        log(f"Saving {inventory.manufacturer} {inventory.model}")
+        log(f"Serial: {inventory.serial}")
+
         write_inventory(inventory)
         print("✓ Inventory")
+        log("Inventory Updated")
 
         build_summary()
         print("✓ Summary")
+        log("Summary Updated")
+
+        log("Scan Complete")
