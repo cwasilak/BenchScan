@@ -3,8 +3,26 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
-DATA_DIR = PROJECT_ROOT / "data"
-DATA_DIR.mkdir(exist_ok=True)
+LOCAL_DATA = PROJECT_ROOT / "data"
+
+EXPORT_LOCATIONS = [
+    Path("/media/user/BENCHSCAN_DATA"),
+    Path("/mnt/BENCHSCAN_DATA"),
+    LOCAL_DATA,
+]
+
+
+def get_data_dir():
+
+    for path in EXPORT_LOCATIONS:
+        if path.exists() and path.is_dir():
+            return path
+
+    LOCAL_DATA.mkdir(exist_ok=True)
+    return LOCAL_DATA
+
+
+DATA_DIR = get_data_dir()
 
 CSV_FILE = DATA_DIR / "Inventory_Detail.csv"
 
@@ -79,9 +97,12 @@ def load_existing_rows():
         try:
             if bad_file.exists():
                 bad_file.unlink()
+
             CSV_FILE.rename(bad_file)
+
             print("WARNING: Invalid inventory CSV detected.")
             print("         Renamed to Inventory_Detail.bad")
+
         except Exception:
             pass
 
@@ -97,6 +118,7 @@ def write_inventory(inventory):
     updated = False
 
     for i, row in enumerate(rows):
+
         if row.get("Serial Number") == inventory.serial:
             rows[i] = new_row
             updated = True
@@ -104,6 +126,8 @@ def write_inventory(inventory):
 
     if not updated:
         rows.append(new_row)
+
+    DATA_DIR.mkdir(exist_ok=True)
 
     with open(CSV_FILE, "w", newline="", encoding="utf-8") as f:
 
