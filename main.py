@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from benchscan.benchscan import BenchScanner
+from benchscan.version import VERSION, BUILD
 
 
 LINE = "=" * 60
@@ -14,7 +15,8 @@ def main():
 
     print()
     print(LINE)
-    print("                 BenchScan Hardware Inventory")
+    print(f"                 BenchScan v{VERSION}")
+    print(f"                  Build {BUILD}")
     print(LINE)
     print()
 
@@ -47,7 +49,7 @@ def main():
     print("-" * 60)
 
     if inventory.battery_present == "Yes":
-        print(f"Present      : Yes")
+        print("Present      : Yes")
         print(f"Manufacturer : {inventory.battery_manufacturer}")
         print(f"Model        : {inventory.battery_model}")
         print(f"Health       : {inventory.battery_health}%")
