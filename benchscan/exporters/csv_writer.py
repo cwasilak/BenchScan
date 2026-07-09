@@ -57,13 +57,40 @@ def inventory_to_row(inventory):
     }
 
 
+def load_existing_rows():
+
+    if not CSV_FILE.exists():
+        return []
+
+    try:
+        with open(CSV_FILE, newline="", encoding="utf-8") as f:
+
+            reader = csv.DictReader(f)
+
+            if reader.fieldnames != HEADERS:
+                raise ValueError("Invalid CSV headers")
+
+            return list(reader)
+
+    except Exception:
+
+        bad_file = CSV_FILE.with_suffix(".bad")
+
+        try:
+            if bad_file.exists():
+                bad_file.unlink()
+            CSV_FILE.rename(bad_file)
+            print("WARNING: Invalid inventory CSV detected.")
+            print("         Renamed to Inventory_Detail.bad")
+        except Exception:
+            pass
+
+        return []
+
+
 def write_inventory(inventory):
 
-    rows = []
-
-    if CSV_FILE.exists():
-        with open(CSV_FILE, newline="", encoding="utf-8") as f:
-            rows = list(csv.DictReader(f))
+    rows = load_existing_rows()
 
     new_row = inventory_to_row(inventory)
 
