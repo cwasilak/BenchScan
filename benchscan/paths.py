@@ -5,6 +5,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 LOCAL_DATA = PROJECT_ROOT / "data"
 
 EXPORT_LOCATIONS = [
+    Path("/media/BENCHDATA"),
     Path("/media/user/BENCHSCAN_DATA"),
     Path("/mnt/BENCHSCAN_DATA"),
     LOCAL_DATA,
