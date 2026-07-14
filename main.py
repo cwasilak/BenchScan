@@ -81,8 +81,15 @@ def main():
     print()
     input("Press ENTER to shut down...")
 
+    print()
+    print("BenchScan data saved to BENCHDATA USB partition.")
+    print("System shutting down...")
+
+import time
+time.sleep(2)
+
 if platform.system() == "Linux":
-    print("Shutdown disabled for testing")
+    subprocess.run(["sudo", "poweroff"])
 else:
     print("Shutdown skipped (Windows test mode).")
 
