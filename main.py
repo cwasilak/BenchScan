@@ -89,7 +89,7 @@ import time
 time.sleep(2)
 
 if platform.system() == "Linux":
-    subprocess.run(["sudo", "poweroff"])
+    print("Shutdown disabled for testing")
 else:
     print("Shutdown skipped (Windows test mode).")
 
