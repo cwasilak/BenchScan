@@ -82,7 +82,7 @@ def main():
     input("Press ENTER to shut down...")
 
 if platform.system() == "Linux":
-    subprocess.run(["sudo", "poweroff"])
+    print("Shutdown disabled for testing")
 else:
     print("Shutdown skipped (Windows test mode).")
 
