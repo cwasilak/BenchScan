@@ -4,8 +4,10 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 LOCAL_DATA = PROJECT_ROOT / "data"
 
+USB_DATA_DIR = Path("/media/BENCHDATA")
+
 EXPORT_LOCATIONS = [
-    Path("/media/BENCHDATA"),
+    USB_DATA_DIR,
     Path("/media/user/BENCHSCAN_DATA"),
     Path("/mnt/BENCHSCAN_DATA"),
     LOCAL_DATA,
