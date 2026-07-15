@@ -90,7 +90,7 @@ def main():
     time.sleep(2)
 
     if platform.system() == "Linux":
-        subprocess.run(["sudo", "/usr/sbinpoweroff"])
+        subprocess.run(["sudo", "/usr/sbin/poweroff"])
     else:
         print("Shutdown skipped (Windows test mode.")
 
